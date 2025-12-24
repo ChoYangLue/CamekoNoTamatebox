@@ -26,7 +26,7 @@ def move_files_out_of_directory(source_dir: str, destination_dir: str):
     if not os.path.exists(destination_dir):
         raise FileNotFoundError(f"Destination directory not found: {destination_dir}")
 
-    random_prefix = randomname(6)
+    random_prefix = randomname(6) # ディレクトリごとにランダムワード生成
     for filename in os.listdir(source_dir):
         source_path = os.path.join(source_dir, filename)
         if os.path.isfile(source_path):
