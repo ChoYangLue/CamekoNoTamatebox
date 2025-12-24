@@ -2,6 +2,8 @@ import os
 from PIL import Image
 from PIL.ExifTags import TAGS
 
+#同じタイムスタンプのファイルがあっても削除しない
+
 def get_exif(img):
     exif = img._getexif()
     try:
@@ -14,6 +16,7 @@ def get_exif(img):
     return "NON"
 
 def rename_files(directory):
+    samename = 0
     for file in os.listdir(directory):
         #print(file)
         try:
@@ -22,7 +25,7 @@ def rename_files(directory):
             datetimeinfo = get_exif(img)
             filenametemp = datetimeinfo.replace(":", "")
             filenametemp = filenametemp.replace(" ", "_")
-            newfilename = "PIC_"+filenametemp+"."+file.split(".")[1] # ex) PIC_20210213_134722.JPG
+            newfilename = "DYKN_"+filenametemp+"."+file.split(".")[1] # ex) DYKN_20210213_134722.JPG
 
             img.close()
             
@@ -31,15 +34,10 @@ def rename_files(directory):
                     os.rename(directory+file, directory+newfilename)
                     print(file+" -->> "+newfilename)
                 else:
-                    old_file_size = int(os.path.getsize(directory+file))
-                    new_file_size = int(os.path.getsize(directory+newfilename))
-                    if old_file_size > new_file_size:
-                        os.remove(directory+newfilename)
-                        os.rename(directory+file, directory+newfilename)
-                        print("delete new file")
-                    else:
-                        os.remove(directory+file)
-                        print("delete old file")
+                    samename += 1
+                    newfilename = newfilename.split(".")[0]+str(samename)+"."+file.split(".")[1]
+                    print("rename")
+                    os.rename(directory+file, directory+newfilename)
                     print(file+" -->> "+newfilename)
         except:
             continue
