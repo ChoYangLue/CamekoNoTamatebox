@@ -124,7 +124,16 @@ def main():
     print(file_paths)
 
     # 関数を呼び出し、ファイルのアップロードと保存期限の設定を行う
-    url = upload_files(file_paths, lifetime=100)
+    retry_count = 0
+    while(retry_count < 5):
+        try:
+            url = upload_files(file_paths, lifetime=100)
+        except Exception as e:
+            print("retry count="+str(retry_count))
+            retry_count += 1
+            continue
+        break
+            
     input()
 
 main()
